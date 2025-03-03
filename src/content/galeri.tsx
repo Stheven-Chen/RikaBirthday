@@ -1,11 +1,13 @@
-import  { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Camera, Heart } from 'lucide-react';
 
 const Galeri = () => {
   const navigate = useNavigate();
   const [currentPhoto, setCurrentPhoto] = useState(0);
-  
+  const [liked, setLiked] = useState(Array(5).fill(false));
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   // Array foto menggunakan Lorem Picsum
   const photos = [
     { src: "https://picsum.photos/id/1015/800/600", caption: "Kenangan Indah Bersama" },
@@ -14,17 +16,45 @@ const Galeri = () => {
     { src: "https://picsum.photos/id/1024/800/600", caption: "Kebahagiaan Selalu" },
     { src: "https://picsum.photos/id/1020/800/600", caption: "Semoga Tahun Depan Lebih Baik!" },
   ];
-  
+
+  // Pesan statis dan tanggal untuk masing-masing foto
+  const messages = [
+    { text: "Foto pertama mengingatkan aku pada awal perjalanan ini.", date: "10 Januari 2024" },
+    { text: "Momen spesial yang tak terlupakan di foto kedua.", date: "15 Februari 2023" },
+    { text: "Senyuman dan tawa yang membuat hari-hari lebih berarti.", date: "20 Maret 2023" },
+    { text: "Setiap kenangan membawa kebahagiaan yang mendalam.", date: "25 April 2023" },
+    { text: "Harapan dan doa untuk masa depan yang lebih baik.", date: "30 Mei 2023" },
+  ];
+
+
   const nextPhoto = () => {
     setCurrentPhoto((prev) => (prev + 1) % photos.length);
   };
-  
+
   const prevPhoto = () => {
     setCurrentPhoto((prev) => (prev - 1 + photos.length) % photos.length);
   };
 
+  const toggleLike = () => {
+    const newLiked = [...liked];
+    newLiked[currentPhoto] = !newLiked[currentPhoto];
+    setLiked(newLiked);
+  };
+
+  // Jalankan audio otomatis saat foto terakhir tampil
+  useEffect(() => {
+    if (currentPhoto === photos.length - 1 && audioRef.current) {
+      audioRef.current.play().catch((err) => {
+        console.error("Auto-play audio gagal:", err);
+      });
+    }
+  }, [currentPhoto, photos.length]);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 relative">
+      {/* Audio element */}
+      <audio ref={audioRef} src="https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/birthday%20song.mp3" />
+
       <button 
         onClick={() => navigate('/pesan')}
         className="absolute top-4 left-4 bg-white/80 p-2 rounded-full hover:bg-blue-100 transition-colors z-10"
@@ -42,7 +72,7 @@ const Galeri = () => {
         </p>
       </div>
       
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl bg-white rounded-2xl shadow-lg overflow-hidden">
         <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
           <div 
             className="w-full h-full flex items-center justify-center"
@@ -81,16 +111,34 @@ const Galeri = () => {
         </div>
         
         <div className="p-4">
-          <p className="text-blue-700 text-center font-medium">
-            {photos[currentPhoto].caption}
-          </p>
-          
-          <div className="mt-4 flex justify-center">
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-blue-700 text-center font-medium text-lg">
+              {photos[currentPhoto].caption}
+            </p>
             <button 
-              className="flex items-center gap-1 text-red-500 bg-red-50 py-2 px-4 rounded-full hover:bg-red-100 transition-colors"
+              onClick={toggleLike} 
+              className="p-2 transition-all duration-300"
+              aria-label={liked[currentPhoto] ? "Batal suka" : "Suka foto ini"}
             >
-              <Heart size={16} /> Like
+              <Heart 
+                size={24} 
+                className={`${liked[currentPhoto] ? "text-red-500 fill-red-500" : "text-gray-400"} transition-colors`} 
+              />
             </button>
+          </div>
+          
+          <div className="mt-3">
+            <div className="w-full p-4 border border-blue-200 rounded-lg bg-blue-50 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+              <p className="text-blue-800 pl-2">
+                {messages[currentPhoto].text}
+              </p>
+              <div className="mt-3 flex justify-end">
+                <span className="text-xs text-blue-400 italic">
+                  {messages[currentPhoto].date}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

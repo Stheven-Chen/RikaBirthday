@@ -67,7 +67,7 @@ const Pesan = () => {
       {/* Audio player menggunakan link raw GitHub */}
       <audio ref={audioRef} preload="auto">
         <source 
-          src="https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/birthday%20song.mp3" 
+          src="https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/HappyBirthdayGMS.mp3" 
           type="audio/mpeg" 
         />
       </audio>
@@ -183,7 +183,7 @@ const Pesan = () => {
               onClick={handleStop}
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full transform transition-all duration-300 flex items-center gap-2"
             >
-              Stop & Lanjut ke Galeri
+              Stop & Lanjut
             </button>
           )}
         </div>
