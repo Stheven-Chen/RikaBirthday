@@ -17,14 +17,14 @@ const Opening = () => {
       <div className="bg-white/80 p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-md">
         <p className="text-lg sm:text-xl text-blue-700 mb-6 sm:mb-8">
           Ada pesan spesial buat kamu hari ini! 
-          Penasaran apa pesannya?
+          Penasaran ya?
         </p>
         
         <button
           onClick={() => navigate('/pesan')}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transform transition-all duration-300 hover:scale-110 hover:shadow-xl w-full sm:w-auto"
         >
-          Lihat Pesan Ulang Tahun
+          Lihat
         </button>
       </div>
       
