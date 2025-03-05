@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Camera, Heart } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Heart } from 'lucide-react';
 
 const Galeri = () => {
   const navigate = useNavigate();
@@ -8,24 +8,25 @@ const Galeri = () => {
   const [liked, setLiked] = useState(Array(5).fill(false));
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Array foto menggunakan Lorem Picsum
+  // Array foto menggunakan Lorem Picsum dan URL lainnya
   const photos = [
-    { src: "https://picsum.photos/id/1015/800/600", caption: "Kenangan Indah Bersama" },
-    { src: "https://picsum.photos/id/1016/800/600", caption: "Momen Spesial" },
-    { src: "https://picsum.photos/id/1018/800/600", caption: "Tertawa Bersama" },
-    { src: "https://picsum.photos/id/1024/800/600", caption: "Kebahagiaan Selalu" },
-    { src: "https://picsum.photos/id/1020/800/600", caption: "Semoga Tahun Depan Lebih Baik!" },
+    { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/First.png", caption: "Dimulai Dari Ini" },
+    { src: "https://picsum.photos/id/1016/800/600", caption: "Pertama Kita Keluar Berdua" },
+    { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/3-1.jpg", caption: "Habis Dari Rumah Hantu" },
+    { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/3.jpeg", caption: "Bulan Favoritku" },
+    { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/YouAndMe.jpg", caption: "Christmas Dinner Time!" },
+    { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/Fav.jpg", caption: "Senyummu" },
   ];
 
   // Pesan statis dan tanggal untuk masing-masing foto
   const messages = [
-    { text: "Foto pertama mengingatkan aku pada awal perjalanan ini.", date: "10 Januari 2024" },
-    { text: "Momen spesial yang tak terlupakan di foto kedua.", date: "15 Februari 2023" },
-    { text: "Senyuman dan tawa yang membuat hari-hari lebih berarti.", date: "20 Maret 2023" },
-    { text: "Setiap kenangan membawa kebahagiaan yang mendalam.", date: "25 April 2023" },
-    { text: "Harapan dan doa untuk masa depan yang lebih baik.", date: "30 Mei 2023" },
+    { text: "Awal kita mulai keluar bersama terus. <br/> (Fotonya blur 🥲)", date: "15 September 2024" },
+    { text: "Pertama kali kita keluar bersama, kau menjagaku disaat aku pusing karena terlalu banyak orang", date: "06 Oktober 2024" },
+    { text: "Kau ingat kita mengantri lama untuk mendapatkan foto ini setelah dari rumah hantu?", date: "23 November 2024" },
+    { text: "Tetap ini adalah foto bersama kita yang paling ku suka", date: "22 Desember 2024" },
+    { text: "Aku sangat senang sekali christmas dinner bersamamu", date: "26 Desember 2024" },
+    { text: "Aku sangat menyukai senyumanmu", date: "23 Desember 2024" },
   ];
-
 
   const nextPhoto = () => {
     setCurrentPhoto((prev) => (prev + 1) % photos.length);
@@ -67,28 +68,19 @@ const Galeri = () => {
         <h1 className="text-2xl sm:text-3xl font-bold text-blue-800 mb-2">
           Galeri Kenangan
         </h1>
-        <p className="text-blue-600">
+        <p className="text-blue-800">
           Beberapa momen spesial yang kita lalui bersama
         </p>
       </div>
       
-      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
-          <div 
-            className="w-full h-full flex items-center justify-center"
-            style={{
-              backgroundImage: `url(${photos[currentPhoto].src})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-          >
-            <Camera 
-              size={48} 
-              className="text-gray-400 opacity-50" 
-              style={{ display: 'none' }} 
-            />
-          </div>
-          
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+        {/* Vertical photo container with fixed height and object-contain */}
+        <div className="relative w-full h-[500px] bg-gray-100 flex items-center justify-center">
+          <img
+            src={photos[currentPhoto].src}
+            alt={photos[currentPhoto].caption}
+            className="max-w-full max-h-full object-contain"
+          />
           <button 
             onClick={prevPhoto}
             className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 p-2 rounded-full hover:bg-white transition-colors"
@@ -110,7 +102,7 @@ const Galeri = () => {
           </div>
         </div>
         
-        <div className="p-4">
+        <div className="p-4 flex-grow flex flex-col">
           <div className="flex justify-between items-center mb-2">
             <p className="text-blue-700 text-center font-medium text-lg">
               {photos[currentPhoto].caption}
@@ -127,12 +119,13 @@ const Galeri = () => {
             </button>
           </div>
           
-          <div className="mt-3">
-            <div className="w-full p-4 border border-blue-200 rounded-lg bg-blue-50 shadow-sm relative overflow-hidden">
+          <div className="mt-3 flex-grow">
+            <div className="w-full p-4 border border-blue-200 rounded-lg bg-blue-50 shadow-sm relative overflow-hidden h-full">
               <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-              <p className="text-blue-800 pl-2">
-                {messages[currentPhoto].text}
-              </p>
+              <p 
+                className="text-blue-800 pl-2"
+                dangerouslySetInnerHTML={{ __html: messages[currentPhoto].text }}
+              />
               <div className="mt-3 flex justify-end">
                 <span className="text-xs text-blue-400 italic">
                   {messages[currentPhoto].date}
