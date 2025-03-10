@@ -11,7 +11,7 @@ const Galeri = () => {
   // Array foto menggunakan Lorem Picsum dan URL lainnya
   const photos = [
     { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/First.png", caption: "Dimulai Dari Ini" },
-    { src: "https://picsum.photos/id/1016/800/600", caption: "Pertama Kita Keluar Berdua" },
+    { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/Aziz.JPG", caption: "Pertama Kita Keluar Berdua" },
     { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/3-1.jpg", caption: "Habis Dari Rumah Hantu" },
     { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/3.jpeg", caption: "Bulan Favoritku" },
     { src: "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/YouAndMe.jpg", caption: "Christmas Dinner Time!" },
@@ -54,7 +54,7 @@ const Galeri = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 relative">
       {/* Audio element */}
-      <audio ref={audioRef} src="https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/birthday%20song.mp3" />
+      <audio ref={audioRef} src="https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/VoiceOfSayang.wav" />
 
       <button 
         onClick={() => navigate('/pesan')}

@@ -6,7 +6,69 @@ const Pesan = () => {
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(0);
+  const [audioLoaded, setAudioLoaded] = useState({ current: false, gallery: false });
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const galleryAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Array of photo URLs to preload from the gallery
+  const photoUrls = [
+    "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/First.png",
+    "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/Aziz.JPG",
+    "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/3-1.jpg",
+    "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/3.jpeg",
+    "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/YouAndMe.jpg",
+    "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/Fav.jpg",
+  ];
+
+  // Gallery audio URL
+  const galleryAudioUrl = "https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/VoiceOfSayang.wav";
+
+  // Preload images when component mounts
+  useEffect(() => {
+    photoUrls.forEach(url => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        setImagesLoaded(prev => prev + 1);
+      };
+      img.onerror = () => {
+        console.error(`Failed to load image: ${url}`);
+        // Still increment counter even if there's an error to avoid hanging
+        setImagesLoaded(prev => prev + 1);
+      };
+    });
+  }, []);
+
+  // Preload gallery audio
+  useEffect(() => {
+    if (galleryAudioRef.current) {
+      const handleGalleryAudioLoad = () => {
+        setAudioLoaded(prev => ({ ...prev, gallery: true }));
+      };
+
+      galleryAudioRef.current.addEventListener('canplaythrough', handleGalleryAudioLoad);
+      
+      return () => {
+        galleryAudioRef.current?.removeEventListener('canplaythrough', handleGalleryAudioLoad);
+      };
+    }
+  }, []);
+
+  // Preload current audio
+  useEffect(() => {
+    if (audioRef.current) {
+      const handleCurrentAudioLoad = () => {
+        setAudioLoaded(prev => ({ ...prev, current: true }));
+      };
+
+      audioRef.current.addEventListener('canplaythrough', handleCurrentAudioLoad);
+      
+      return () => {
+        audioRef.current?.removeEventListener('canplaythrough', handleCurrentAudioLoad);
+      };
+    }
+  }, []);
 
   // Hentikan audio ketika komponen unmount
   useEffect(() => {
@@ -62,12 +124,39 @@ const Pesan = () => {
     }
   `;
 
+  // Calculate overall loading progress
+  const totalAssets = photoUrls.length + 2; // images + 2 audio files
+  const loadedAssets = imagesLoaded + (audioLoaded.current ? 1 : 0) + (audioLoaded.gallery ? 1 : 0);
+  const loadingPercentage = Math.round((loadedAssets / totalAssets) * 100);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 relative">
-      {/* Audio player menggunakan link raw GitHub */}
+      {/* Hidden div for preloading images */}
+      <div style={{ display: 'none' }}>
+        {photoUrls.map((url, index) => (
+          <img key={index} src={url} alt="preload" />
+        ))}
+      </div>
+      
+      {/* Loading indicator */}
+      {loadedAssets < totalAssets && (
+        <div className="absolute bottom-4 left-4 bg-white/80 px-3 py-1 rounded-full text-xs text-blue-600">
+          Memuat aset: {loadingPercentage}%
+        </div>
+      )}
+      
+      {/* Audio player untuk halaman pesan */}
       <audio ref={audioRef} preload="auto">
         <source 
           src="https://raw.githubusercontent.com/Stheven-Chen/birthdaySong/main/HappyBirthdayGMS.mp3" 
+          type="audio/mpeg" 
+        />
+      </audio>
+      
+      {/* Audio player untuk halaman galeri (hanya untuk preloading) */}
+      <audio ref={galleryAudioRef} preload="auto">
+        <source 
+          src={galleryAudioUrl}
           type="audio/mpeg" 
         />
       </audio>
@@ -90,7 +179,7 @@ const Pesan = () => {
               Sebelum Kita Rayakan
             </h3>
             <p className="text-blue-700 mb-6">
-              Ayo kita dengar lagu ini dulu untukmu!
+              Ayo kita dengar lagu ini dulu!
             </p>
             <div className="flex justify-center gap-3">
               <button
@@ -103,7 +192,7 @@ const Pesan = () => {
                 onClick={startCelebration}
                 className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
               >
-                Putar Lagu!
+               Ayo!
               </button>
             </div>
           </div>
@@ -155,10 +244,14 @@ const Pesan = () => {
         </h1>
         <div className="space-y-4 sm:space-y-6 text-blue-700 text-base sm:text-lg">
           <p>
-            Di hari spesialmu ini, aku ingin mengucapkan selamat ulang tahun yang penuh dengan kebahagiaan!
+            Sayang, di hari spesialmu ini, aku ingin mengucapkan selamat ulang tahun yang penuh dengan kebahagiaan!
           </p>
           <p>
-            Semoga tahun barumu dipenuhi dengan tawa, cinta, dan segala hal baik yang kamu impikan.
+            Semoga tahun barumu dipenuhi dengan tawa, cinta, dan segala hal baik yang kamu impikan. 
+            <br/>
+            Damai sejahtera Tuhan menyertaimu selalu
+            <br/>
+            God Bless You!
           </p>
           <p className="font-bold text-center">
             Kamu adalah orang yang luar biasa!
